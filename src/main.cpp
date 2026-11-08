@@ -49,7 +49,6 @@ static bool findFrom(Position& position, uint64_t stillEmpty, uint8_t& from) {
     for (uint8_t sq = 0; sq < 64; sq++) {
         if (!(stillEmpty & (1ULL << sq))) continue;
         piece = position.board[sq];
-        if (colorOf(piece) != position.turn) continue;
         if (!found || piece == Piece::whiteKing || piece == Piece::blackKing) {
             found = true;
             from = sq;
@@ -95,11 +94,12 @@ int main () {
 
 
     // Initialize peripherals
-    initLED();
-    initLCD();
     initTimer0();
     initTimer1();
-    initSwitchPB4();
+    initTimer2();
+    initLED();
+    initLCD();
+    initSwitchPE4();
     initSPI();
     sei();
 
@@ -107,7 +107,6 @@ int main () {
     while (1) {
         switch (currState) {
             case State::inProgress: {
-                printMessage("In", "progress");
                 expected = currPos.occupancy();
                 if (scan) {
                     prevBoard = currBoard;
@@ -206,6 +205,7 @@ int main () {
                     emptied = 0;
                     currBoard = readBoard();
                     if (currBoard == currPos.occupancy()) {
+                        printMessage("In", "progress");
                         currState = State::inProgress;
                     }
                 }
@@ -219,6 +219,7 @@ int main () {
                     emptied = 0;
                     currBoard = readBoard();
                     if (currBoard == currPos.occupancy()) {
+                        printMessage("In", "progress");
                         currState = State::inProgress;
                     }
                 }
@@ -236,7 +237,7 @@ ISR(TIMER0_COMPA_vect){
 }
 
 // When the button is pressed once wait unitl pieces are reset by players then
-// press button again to start a new game
+// start a new game
 ISR(INT4_vect){
     switch (currState) {
         case State::illegalMove:

@@ -331,8 +331,8 @@ bool inCheck(Position& position, Color side) {
     };
 
     for (auto& s : knightSteps) {
-        uint8_t row = kingRank + s[0];
-        uint8_t file = kingFile + s[1];
+        int8_t row = kingRank + s[0];
+        int8_t file = kingFile + s[1];
         if (row >= 0 && row < 8 && file >= 0 && file < 8) {
             if (position.board[row * 8 + file] == enemyKnight) return true;
         }
@@ -502,7 +502,7 @@ MoveType isGameOver(Position& position) {
     Position test = position;
 
     for (uint8_t from = 0; from < 64; from++) {
-        if (colorOf(posiiton.board[from]) != position.turn) continue;
+        if (colorOf(position.board[from]) != position.turn) continue;
         if (position.board[from] == Piece::empty) continue;
         for (uint8_t to = 0; to < 64; to++) {
             move.to = to;
@@ -544,9 +544,6 @@ MoveType Position::tryMoveInner(Move& move) {
 }
 
 MoveType Position::tryMove(Move& move) {
-    Position tempBoard = *this;
-
-
     MoveType moveResult = tryMoveInner(move);
     if (moveResult != MoveType::legal) return moveResult;
 

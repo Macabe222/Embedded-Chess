@@ -39,7 +39,7 @@ void delayUs(unsigned int delay){
 
     // 1 us per iteration
     for (unsigned int i = 0; i < delay; i++) {
-        // Wait for the OCF0A flag to be set, signaling timer completion
+        // Wait for the OCF1A flag to be set, signaling timer completion
         while (!(TIFR1 & (1 << OCF1A))){}
 
         // Clear flag so it can count up again next iteration

@@ -1,8 +1,3 @@
-// Description: This file implements turnOnLED and initLED to control
-// the LEDs.
-//----------------------------------------------------------------------//
-
-
 #include <avr/io.h>
 #include <util/delay.h>
 #include "led.h"

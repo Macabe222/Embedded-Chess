@@ -1,9 +1,3 @@
-// Author:
-// Net ID:
-// Date:
-// Assignment:     Lab 3
-//----------------------------------------------------------------------//
-
 #ifndef LCD_H
 #define LCD_H
 

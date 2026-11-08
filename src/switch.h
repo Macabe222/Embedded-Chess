@@ -4,6 +4,6 @@
 #ifndef SWITCH_H
 #define SWITCH_H
 
-void initSwitchPB4();
+void initSwitchPE4();
 
 #endif
