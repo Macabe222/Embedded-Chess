@@ -40,19 +40,32 @@ static int findBitIndex(uint64_t num) {
     return index;
 }
 
-// Finds the correct index of the square moved from, loops over all squares, only
-// excepts pieces of the correct color, after the first piece is found a king can still override
-// since castling moves two pieces and a rook would be found first for queenside castles
+// Finds the correct index of the square moved from, loops over all squares, after the
+// first piece is found a king or correct colored piece can still override
+// since castling moves two pieces and a rook would be found first for queenside castles.
+// The wrong color logic is here so that tryMove can report illegal moves and the board doesn't
+// get stuck in an endless cycle
 static bool findFrom(Position& position, uint64_t stillEmpty, uint8_t& from) {
-    bool found = false;
+    bool found = false, foundOther = false;
+    uint8_t other = 0;
     Piece piece;
     for (uint8_t sq = 0; sq < 64; sq++) {
         if (!(stillEmpty & (1ULL << sq))) continue;
         piece = position.board[sq];
+        if (colorOf(piece) != position.turn) {
+            if (!foundOther) {
+                foundOther = true; other = sq;
+            }
+            continue;
+        }
         if (!found || piece == Piece::whiteKing || piece == Piece::blackKing) {
             found = true;
             from = sq;
         }
+    }
+    if (!found && foundOther) {
+        from = other;
+        return true;
     }
     return found;
 }
@@ -103,6 +116,7 @@ int main () {
     initSPI();
     sei();
 
+    printMessage("In", "progress");
     // game loop
     while (1) {
         switch (currState) {
