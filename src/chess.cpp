@@ -500,10 +500,11 @@ MoveType isGameOver(Position& position) {
     Move move;
     MoveType moveResult;
     Position test = position;
-    for (uint8_t from = 0; i < 64; i++) {
-        if (colorOf(posiiton.board[from]) == position.turn) continue;
+
+    for (uint8_t from = 0; from < 64; from++) {
+        if (colorOf(posiiton.board[from]) != position.turn) continue;
         if (position.board[from] == Piece::empty) continue;
-        for (uint8_t to = 0; j < 64; j++) {
+        for (uint8_t to = 0; to < 64; to++) {
             move.to = to;
             move.from = from;
             moveResult = test.tryMoveInner(move);

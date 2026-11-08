@@ -1,5 +1,5 @@
-#define SHIFTREGISTER_H
 #ifndef SHIFTREGISTER_H
+#define SHIFTREGISTER_H
 
 #include "avr/io.h"
 

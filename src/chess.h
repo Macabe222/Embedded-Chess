@@ -46,6 +46,9 @@ public:
     // position is left unchanged.
     MoveType tryMove(Move& move);
 
+    // Logic to be called by try move when checking stalemate/checkmate
+    MoveType tryMoveInner(Move& move);
+
     // One bit per occupied square, bit 0 = a8, same numbering as board[]
     uint64_t occupancy();
 

@@ -5,7 +5,7 @@
 #include "timer.h"
 #include "switch.h"
 #include "led.h"
-#include "spi.h"
+#include "shiftregister.h"
 
 #define START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
@@ -17,9 +17,11 @@ volatile bool scan = false;
 static void printMessage(char* line1, char* line2) {
     moveCursor(0, 0);
     writeString("        ");
+    moveCursor(0, 0);
     writeString(line1);
     moveCursor(0, 1);
     writeString("        ");
+    moveCursor(0, 1);
     writeString(line2);
 
 }
@@ -110,7 +112,7 @@ int main () {
                 if (scan) {
                     prevBoard = currBoard;
                     scan = false;
-                    currBoard = readSensors();
+                    currBoard = readBoard();
                     emptied |= expected & ~currBoard;
                     if (currBoard == prevBoard) stableCount++;
                     else stableCount = 0;
@@ -153,11 +155,11 @@ int main () {
                                 currState = State::waitGame;
                                 break;
                             case MoveType::stalemate:
-                                printMessage("Stalemt");
+                                printMessage("Stalemt", "");
                                 currState = State::waitGame;
                                 break;
                             case MoveType::blockedPath:
-                                printMessage("Blocked", "path")
+                                printMessage("Blocked", "path");
                                 currState = State::illegalMove;
                                 break;
                             case MoveType::leavesKingInCheck:
@@ -173,11 +175,11 @@ int main () {
                                 currState = State::illegalMove;
                                 break;
                             case MoveType::wrongMovement:
-                                printMessage("Wrong", "turn");
+                                printMessage("Wrong", "Movement");
                                 currState = State::illegalMove;
                                 break;
                             case MoveType::selfCapture:
-                                printMessage("Self", "capture")
+                                printMessage("Self", "capture");
                                 currState = State::illegalMove;
                                 break;
                         }
@@ -202,7 +204,7 @@ int main () {
                     scan = false;
                     stableCount = 0;
                     emptied = 0;
-                    currBoard = readSensors();
+                    currBoard = readBoard();
                     if (currBoard == currPos.occupancy()) {
                         currState = State::inProgress;
                     }
@@ -215,7 +217,7 @@ int main () {
                     scan = false;
                     stableCount = 0;
                     emptied = 0;
-                    currBoard = readSensors();
+                    currBoard = readBoard();
                     if (currBoard == currPos.occupancy()) {
                         currState = State::inProgress;
                     }

@@ -35,7 +35,7 @@ uint64_t readBoard() {
     delayUs(1);
     PORTB |= (1 << LOAD_BIT);
 
-    for (uint8_t shiftCount; shiftCount < 8; shiftCoun++) {
+    for (uint8_t shiftCount = 0; shiftCount < 8; shiftCount++) {
         uint8_t occupied = ~readByte(); // Flip bits since sensors are connected to pull up resistors
         bits |= (uint64_t)occupied << (8 * shiftCount);
     }
