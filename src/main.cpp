@@ -103,7 +103,7 @@ int main () {
     Move move;
     MoveType moveResult;
     uint64_t emptied = 0, expected = 0, currBoard = 0, prevBoard = 0, stillEmpty = 0, captured = 0, placed = 0;
-    uint8_t stableCount = 0, capturedIndex = 0;
+    uint8_t stableCount = 0;
 
 
     // Initialize peripherals
@@ -176,7 +176,7 @@ int main () {
                                 currPos.fromFEN(START_FEN);
                                 delayMs(5000);
                                 printMessage("Setup", "board");
-                                turnOnRedLED():
+                                turnOnRedLED();
                                 currState = State::waitGame;
                                 break;
                             case MoveType::stalemate:
