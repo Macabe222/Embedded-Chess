@@ -6,6 +6,7 @@
 #define LED_H
 
 void initLED();
-void turnOnLED();
+void turnOnGreenLED();
+void turnOnRedLED();
 
 #endif

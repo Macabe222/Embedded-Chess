@@ -25,6 +25,9 @@ void initTimer2(){
 }
 
 void delayMs(unsigned int delay){
+    // Clear flag so it can count up on first function call
+    TIFR2 |= (1 << OCF2A);
+
     // 1 ms per iteration
     for (unsigned int i = 0; i < delay; i++) {
         // Wait for the OCF2A flag to be set, signaling timer completion
@@ -36,6 +39,8 @@ void delayMs(unsigned int delay){
 }
 
 void delayUs(unsigned int delay){
+    // Clear flag so it can count up on first function call
+    TIFR1 |= (1 << OCF1A);
 
     // 1 us per iteration
     for (unsigned int i = 0; i < delay; i++) {
