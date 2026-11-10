@@ -1,7 +1,6 @@
 #include "shiftregister.h"
 #include "timer.h"
 
-#define F_CPU 16000000UL
 #define LOAD_BIT PB4 // Drives loading from sensors or shifting through registers
 #define MISO PB3 // Serial output from the shift registers
 #define MOSI PB2 // Serial input to the shift registers, not used but still set as output

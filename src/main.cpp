@@ -11,10 +11,10 @@
 
 enum class State : uint8_t {inProgress, illegalMove, waitGame, debouncePress, waitRelease, debounceRelease};
 
-volatile State currState = State::inProgress;
+volatile State currState = State::waitGame;
 volatile bool scan = false;
 
-static void printMessage(char* line1, char* line2) {
+static void printMessage(const char* line1, char* line2) {
     moveCursor(0, 0);
     writeString("        ");
     moveCursor(0, 0);
@@ -28,8 +28,8 @@ static void printMessage(char* line1, char* line2) {
 
 // find the index of the only 1 bit in a binary number
 // used to construct the to and from move
-static int findBitIndex(uint64_t num) {
-    int index = 0;
+static uint8_t findBitIndex(uint64_t num) {
+    uint8_t index = 0;
     while ((num & 1) == 0) {
         num >>= 1;
         index++;
@@ -103,7 +103,7 @@ int main () {
     Move move;
     MoveType moveResult;
     uint64_t emptied = 0, expected = 0, currBoard = 0, prevBoard = 0, stillEmpty = 0, captured = 0, placed = 0;
-    uint8_t stableCount = 0;
+    uint8_t stableCount = 0, capturedIndex = 0;
 
 
     // Initialize peripherals
@@ -139,6 +139,12 @@ int main () {
                     stillEmpty = expected & ~currBoard;
                     placed = currBoard & ~expected;
                     captured = currBoard & expected & emptied; // The last sqaure to be emptied that now has a piece on it was captured
+                    if (captured  != 0) {
+                        capturedIndex = findBitIndex(captured);
+                        if (colorOf(currPos.board[capturedIndex]) == currPos.turn) {
+                            captured = 0x00000000;
+                        }
+                    }
 
                     // No move made
                     if (currBoard == expected) {
@@ -165,10 +171,16 @@ int main () {
                         switch (moveResult) {
                             case MoveType::checkmate:
                                 printMessage("Checkmt", "");
+                                currPos.fromFEN(START_FEN);
+                                delayMs(5000);
+                                printMessage("Setup", "board");
                                 currState = State::waitGame;
                                 break;
                             case MoveType::stalemate:
                                 printMessage("Stalemt", "");
+                                currPos.fromFEN(START_FEN);
+                                delayMs(5000);
+                                printMessage("Setup", "board");
                                 currState = State::waitGame;
                                 break;
                             case MoveType::blockedPath:
@@ -209,6 +221,8 @@ int main () {
                 break;
             case State::debounceRelease:
                 delayMs(5);
+                printMessage("Setup", "board");
+                currPos.fromFEN(START_FEN);
                 currState = State::waitGame;
                 break;
             case State::illegalMove:
@@ -225,7 +239,6 @@ int main () {
                 }
                 break;
             case State::waitGame:
-                currPos.fromFEN(START_FEN);
                 if (scan) {
                     // Reset flags and trackers
                     scan = false;
